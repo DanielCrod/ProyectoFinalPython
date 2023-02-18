@@ -16,6 +16,7 @@ class Producto():
         self.marca = marca
 
 ListaProductos=[]
+listaFactura = []
 
 class ejemplo_GUI(QMainWindow):
 
@@ -26,11 +27,46 @@ class ejemplo_GUI(QMainWindow):
         self.listView = QListWidget(self.listView)
         self.elimina.clicked.connect(self.eliminar)
         self.limpia.clicked.connect(self.limpiar)
-        self.factura.clicked.connect(self.sacarFactura)
+        self.factura.clicked.connect(self.mostrarFactura)
 
 
-    def sacarFactura(self):
-        QMessageBox.information(self, )
+    def cargarFactura(self):
+        for Producto in ListaProductos:
+            listaFactura.append(Producto.NombreProducto + "" + "{:2f}".format(Producto.precio))
+            listaFactura.sort()
+            return listaFactura.str()
+
+
+    def mostrarFactura(self):
+        msgBox = QMessageBox()
+        msgBox.setWindowTitle("Factura")
+
+        txtFactura = "Factura mostrada a continuación: \n \n"
+        txtFactura += ("Total a pagar: "  + "€" + "\n")
+
+        msgBox.setText(txtFactura)
+
+        msgBox.addButton(QMessageBox.Ok)
+        moreButton = QPushButton("Más")
+        msgBox.addButton(moreButton, QMessageBox.ActionRole)
+
+        msgBox.setDefaultButton(moreButton)
+
+        def infoFactura():
+            facturaInfo = "Más info: \n\n"
+            facturaInfo += ("Productos contenidos: \n\n + \n\n")
+            facturaInfo += ("Precio final:")
+
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Information)
+            msg.setWindowTitle("Info completa")
+
+            msg.setText(facturaInfo)
+
+            moreButton.clicked.connect(infoFactura)
+            returnValue = msgBox.exec_()
+
+
 
     def guardar(self):
         nombreProducto = self.nProducto.text()
@@ -60,6 +96,7 @@ class ejemplo_GUI(QMainWindow):
     def eliminar(self):
         self.listView.takeItem(self.listView.currentRow())
         QMessageBox.information(self, "Producto Eliminado", "Producto eliminado!")
+        self.total.setText("")
 
     def limpiar(self):
         self.nProducto.setText("")
@@ -73,6 +110,8 @@ class ejemplo_GUI(QMainWindow):
             producto = i
             item1 = QListWidgetItem(producto.NombreProducto)
             self.listView.addItem(item1)
+
+
 
 
 
