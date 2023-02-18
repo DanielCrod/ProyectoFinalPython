@@ -4,7 +4,6 @@ from PyQt5 import uic
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
-import easygui as easygui
 
 
 
@@ -32,40 +31,39 @@ class ejemplo_GUI(QMainWindow):
 
     def cargarFactura(self):
         for Producto in ListaProductos:
-            listaFactura.append(Producto.NombreProducto + "" + "{:2f}".format(Producto.precio))
+            listaFactura.append(Producto.NombreProducto + "" + Producto.precio)
             listaFactura.sort()
-            return listaFactura.str()
+            return listaFactura.__str__()
 
 
     def mostrarFactura(self):
         msgBox = QMessageBox()
+        msgBox.setIcon(QMessageBox.Information)
         msgBox.setWindowTitle("Factura")
 
         txtFactura = "Factura mostrada a continuación: \n \n"
-        txtFactura += ("Total a pagar: "  + "€" + "\n")
+        txtFactura += ("Total a pagar: " + self.total.text() + "€" + "\n")
 
         msgBox.setText(txtFactura)
 
         msgBox.addButton(QMessageBox.Ok)
         moreButton = QPushButton("Más")
         msgBox.addButton(moreButton, QMessageBox.ActionRole)
-
         msgBox.setDefaultButton(moreButton)
 
         def infoFactura():
             facturaInfo = "Más info: \n\n"
-            facturaInfo += ("Productos contenidos: \n\n + \n\n")
-            facturaInfo += ("Precio final:")
+            facturaInfo += ("Productos que contiene el pedido: \n\n" + self.cargarFactura() + "\n\n")
+            facturaInfo += ("Precio final: " + self.total.text() + "€")
 
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Information)
             msg.setWindowTitle("Info completa")
 
             msg.setText(facturaInfo)
-
-            moreButton.clicked.connect(infoFactura)
-            returnValue = msgBox.exec_()
-
+            msg.exec_()
+        moreButton.clicked.connect(infoFactura)
+        returnValue = msgBox.exec_()
 
 
     def guardar(self):
@@ -110,11 +108,6 @@ class ejemplo_GUI(QMainWindow):
             producto = i
             item1 = QListWidgetItem(producto.NombreProducto)
             self.listView.addItem(item1)
-
-
-
-
-
 
 
 if __name__ == '__main__':
